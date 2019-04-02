@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Registration</title>
+</head>
+<body>
+
+<label for="firstname">Vorname</label><input id="firstname" name="firstname" type="text"/><br>
+<label for="lastname">Latname</label><input id="lastname" name="lastname" type="text"/><br>
+
+<button id="post" onclick="postRegistration()">store</button>
+
+
+<br/>----<br/>
+
+<button id="load" onclick="getRegistration()">load</button>
+
+<h1>Registration</h1>
+<ul id="registrations"></ul>
+
+
+<script>
+
+    function getRegistration(event) {
+        document.getElementById('registrations').innerHTML = '';
+        fetch("/registration", {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+            .then((resp) => resp.json())
+            .then(function (data) {
+                return data.map(function (registration) { // Map through the results and for each run the code below
+                    let li = document.createElement('li'), //  Create the elements we need
+                        span = document.createElement('span');
+                    span.innerHTML =
+                        `${registration.firstname} ${registration.lastname} (${registration.id})`;
+                    li.appendChild(span)
+                    document.getElementById('registrations').appendChild(li);
+                })
+            })
+            .catch(function (error) {
+                console.log(error)
+            });
+
+    }
+
+    function postRegistration(event) {
+        //event.preventDefault();
+
+        let firstname = document.getElementById('firstname').value;
+        let lastname = document.getElementById('lastname').value;
+
+        fetch('/registration', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({firstname: firstname, lastname: lastname})
+        })
+            .then((data) => console.log(data))
+            .catch((err) => console.log(err))
+    }
+</script>
+</body>
+</html>
