@@ -1,0 +1,32 @@
+# GraalVM CE 1.0.0-rc14, JDK 1.8.0_192, Maven 3.6.0, Git,
+#
+# docker build -f=src/main/docker/Dockerfile.build -t camp/graalbuildvm .
+# docker run -it -v c:/source/graalvm/java/quarkus:/root camp/graalbuildvm bash
+
+FROM debian:stretch-slim as build
+
+ENV JAVA_HOME /opt/graalvm
+ENV GRAALVM_HOME /opt/graalvm
+ENV NATIVE_IMAGE_CONFIG_FILE $GRAALVM_HOME/native-image.properties
+ENV PATH /opt/apache-maven/bin:$JAVA_HOME/jre/bin:$GRAALVM_HOME/bin:$PATH
+
+# Install DEV Tools
+RUN apt-get update && \
+    apt-get -y install gcc libc6-dev zlib1g-dev curl git nano && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Maven
+RUN curl http://mirror.nbtelecom.com.br/apache/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz -o /tmp/maven.tar.gz && \
+    tar -zxvf /tmp/maven.tar.gz -C /tmp && \
+    mv /tmp/apache-maven-3.6.0 /opt/apache-maven && \
+    rm -rf /tmp/*
+
+# Install GraalVM
+RUN curl -L https://github.com/oracle/graal/releases/download/vm-1.0.0-rc14/graalvm-ce-1.0.0-rc14-linux-amd64.tar.gz -o /tmp/graalvm.tar.gz && \
+    tar -zxvf /tmp/graalvm.tar.gz -C /tmp && \
+    mv /tmp/graalvm-ce-1.0.0-rc14 /opt/graalvm && \
+    mkdir -p /root/.native-image && \
+    echo "NativeImageArgs = --no-server" > $GRAALVM_HOME/native-image.properties && \
+    rm -rf /tmp/*
+
+WORKDIR /root
