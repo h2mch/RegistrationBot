@@ -20,41 +20,20 @@ import ch.zuehlke.camp.graal.entity.Registration;
 public class RegistrationResource {
 
     @Inject
-    private RegistrationService registrationService;
-
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response register(Registration registration) {
-        String uuid = registrationService.register(registration);
-        return Response.accepted(uuid).build();
-    }
-
-    @PUT
-    @Path("{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateRegistration(@PathParam("id") String uuid, Registration registration) {
-        Registration updatedRegistration = registrationService.update(uuid, registration);
-
-        return Response.ok(updatedRegistration).build();
-
-    }
+    private Store store;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
     public Response getRegistration(@PathParam("id") String id) {
-        Registration registration = registrationService.getRegistration(id);
+        Registration registration = store.get(id);
         return Response.ok(registration).build();
     }
-
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRegistrations() {
-        System.out.println("getRegistration was called");
-        Collection<Registration> registrations = registrationService.getRegistrations();
+        Collection<Registration> registrations = store.getRegistrations();
         return Response.ok(registrations).build();
-
     }
 }

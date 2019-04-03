@@ -9,20 +9,54 @@
 <label for="firstname">Vorname</label><input id="firstname" name="firstname" type="text"/><br>
 <label for="lastname">Latname</label><input id="lastname" name="lastname" type="text"/><br>
 
-<button id="post" onclick="postRegistration()">store</button>
+<button id="post" onclick="postNotification()">store</button>
 
 
-<br/>----<br/>
-
-<button id="load" onclick="getRegistration()">load</button>
+<br/>------------<br/>
+<button id="load" onclick="loadData()">load</button>
+<br/>------------<br/>
 
 <h1>Registration</h1>
 <ul id="registrations"></ul>
+<br/>----<br/>
 
-
+<h1>Notifications</h1>
+<ul id="notifications"></ul>
+<br/>--------------<br/>
 <script>
 
-    function getRegistration(event) {
+    function loadData(event) {
+        console.log("Load data");
+        getNotification();
+        getRegistration();
+
+    }
+
+    function getNotification() {
+        document.getElementById('notifications').innerHTML = '';
+        fetch("/notification", {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+            .then((resp) => resp.json())
+            .then(function (data) {
+                return data.map(function (registration) { // Map through the results and for each run the code below
+                    let li = document.createElement('li'), //  Create the elements we need
+                        span = document.createElement('span');
+                    span.innerHTML =
+                        `${registration.firstname} ${registration.lastname} (${registration.id})`;
+                    li.appendChild(span)
+                    document.getElementById('notifications').appendChild(li);
+                })
+            })
+            .catch(function (error) {
+                console.log(error)
+            });
+    }
+
+    function getRegistration() {
         document.getElementById('registrations').innerHTML = '';
         fetch("/registration", {
             method: 'GET',
@@ -44,16 +78,14 @@
             .catch(function (error) {
                 console.log(error)
             });
-
     }
 
-    function postRegistration(event) {
-        //event.preventDefault();
+    function postNotification(event) {
 
         let firstname = document.getElementById('firstname').value;
         let lastname = document.getElementById('lastname').value;
 
-        fetch('/registration', {
+        fetch('/notification', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
