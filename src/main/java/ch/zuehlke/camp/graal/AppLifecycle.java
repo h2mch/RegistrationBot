@@ -1,7 +1,5 @@
 package ch.zuehlke.camp.graal;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -13,10 +11,10 @@ import io.quarkus.runtime.StartupEvent;
 public class AppLifecycle {
 
     @Inject
-    Store store;
+    TelegramStore telegramStore;
 
     void onStart(@Observes StartupEvent ev) {
-    //    store.initStore();
+    //    telegramStore.initStore();
     }
 
     void onStop(@Observes ShutdownEvent ev) {

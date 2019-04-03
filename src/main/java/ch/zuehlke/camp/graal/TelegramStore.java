@@ -21,7 +21,7 @@ import ch.zuehlke.camp.graal.entity.telegram.Update;
 import io.quarkus.scheduler.Scheduled;
 
 @ApplicationScoped
-public class Store {
+public class TelegramStore {
 
     @ConfigProperty(name = "BOT_NAME")
     private String botName;
