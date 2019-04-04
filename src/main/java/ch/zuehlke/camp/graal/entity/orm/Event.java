@@ -1,11 +1,10 @@
 package ch.zuehlke.camp.graal.entity.orm;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+
 import javax.persistence.Entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
@@ -15,8 +14,10 @@ public class Event extends PanacheEntity {
 
     public String name;
 
-    public LocalDateTime start;
-    public Duration duration;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "EEE MMM dd HH:mm:ss Z yyyy")
+    public ZonedDateTime start;
+
+    public long duration;
 
     public LocalDateTime created;
 }

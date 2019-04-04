@@ -1,36 +1,138 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Event</title>
+    <meta charset="utf-8"/>
+    <title>Events</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/wingcss/0.1.8/wing.min.css"
+          rel="stylesheet"/>
+
+    <!-- Load AngularJS -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("EventManagement", []);
+        //Controller Part
+        app.controller("EventManagementController", function ($scope, $http) {
+            //Initialize page with default data which is blank in this example
+            $scope.events = [];
+            $scope.form = {
+                id: -1,
+                name: "",
+                start: "",
+                duration: ""
+            };
+            //Now load the data from server
+            _refreshPageData();
+            //HTTP POST/PUT methods for add/edit events
+            $scope.update = function () {
+                var method = "";
+                var url = "";
+                var data = {};
+                if ($scope.form.id == -1) {
+                    //Id is absent so add events - POST operation
+                    method = "POST";
+                    url = '/api/events';
+                    data.name = $scope.form.name;
+                    data.start = $scope.form.start;
+                    data.duration = $scope.form.duration;
+                } else {
+                    //If Id is present, it's edit operation - PUT operation
+                    method = "PUT";
+                    url = '/api/events/' + $scope.form.id;
+                    data.name = $scope.form.name;
+                    data.start = $scope.form.start;
+                    data.duration = $scope.form.duration;
+                }
+                $http({
+                          method: method,
+                          url: url,
+                          data: angular.toJson(data),
+                          headers: {
+                              'Content-Type': 'application/json'
+                          }
+                      }).then(_success, _error);
+            };
+
+            //HTTP DELETE- delete event by id
+            $scope.remove = function (event) {
+                $http({
+                          method: 'DELETE',
+                          url: '/api/events/' + event.id
+                      }).then(_success, _error);
+            };
+
+            //In case of edit events, populate form with event data
+            $scope.edit = function (event) {
+                $scope.form.id = event.id;
+                $scope.form.name = event.name;
+                $scope.form.start = new Date();
+                $scope.form.duration = event.duration;
+            };
+
+            /* Private Methods */
+
+            //HTTP GET- get all events collection
+            function _refreshPageData() {
+                $http({
+                          method: 'GET',
+                          url: '/api/events'
+                      }).then(function successCallback(response) {
+                    $scope.events = response.data;
+                }, function errorCallback(response) {
+                    console.log(response.statusText);
+                });
+            }
+
+            function _success(response) {
+                _refreshPageData();
+                _clearForm()
+            }
+
+            function _error(response) {
+                alert(response.data.message || response.statusText);
+            }
+
+            //Clear the form
+            function _clearForm() {
+                $scope.form.name = "";
+                $scope.form.start = "";
+                $scope.form.duration = "";
+                $scope.form.id = -1;
+            }
+        });
+    </script>
 </head>
-<body>
 
-<label for="name">Name</label><input id="name" name="name" type="text"/><br>
-<label for="start">start</label><input id="start" name="start" type="datetime-local"/><br>
-<label for="duration">duration</label><input id="duration" name="duration" type="number"/><br>
 
-<button id="post" onclick="postEvent()">store</button>
+<body ng-app="EventManagement" ng-controller="EventManagementController">
 
-<script>
-    function postEvent(event) {
+<div class="container">
+    <h1>Event Managment</h1>
+    <p>This application handles events</p>
 
-        let name = document.getElementById('name').value;
-        let start = document.getElementById('start').value;
-        let duration = document.getElementById('duration').value;
+    <h3>Add/Edit an Event</h3>
+    <form ng-submit="update()">
+        <div class="row">
+            <div class="col-6"><input ng-model="form.name" placeholder="Name" size="60"
+                                      type="text"/></div>
+            <div class="col-3"><input ng-model="form.start" placeholder="Start"
+                                      type="datetime-local"/></div>
+            <div class="col-3"><input ng-model="form.duration" placeholder="Duration"
+                                      type="number"/></div>
+        </div>
+        <input type="submit" value="Save"/>
+    </form>
 
-        fetch('/api/event', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({name: name, start: start, duration: duration})
-        })
-            .then((data) => console.log(data))
-            .catch((err) => console.log(err))
-    }
-</script>
-
+    <h3>Event List</h3>
+    <div class="row">
+        <div class="col-2">Name</div>
+    </div>
+    <div class="row" ng-repeat="event in events">
+        <div class="col-2">{{ event.name }}</div>
+        <div class="col-8"><a class="btn" ng-click="edit( event )">Edit</a> <a class="btn"
+                                                                               ng-click="remove( event )">Remove</a>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
