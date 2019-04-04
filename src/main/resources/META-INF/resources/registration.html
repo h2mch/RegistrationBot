@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Person</title>
+</head>
+<body>
+
+<label for="event">Event</label><input id="event" name="event" type="text"/><br>
+<label for="person">Person</label><input id="person" name="person" type="text"/><br>
+<label for="notice">Notice</label><input id="notice" name="notice" type="text"/><br>
+
+<button id="post" onclick="postRegistration()">store</button>
+
+<script>
+    function postPerson(event) {
+
+        let eventName = document.getElementById('event').value;
+        let person = document.getElementById('person').value;
+        let notice = document.getElementById('notice').value;
+
+        fetch('/api/registration', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({event: eventName, person: person, notice : notice})
+        })
+            .then((data) => console.log(data))
+            .catch((err) => console.log(err))
+    }
+</script>
+</body>
+</html>

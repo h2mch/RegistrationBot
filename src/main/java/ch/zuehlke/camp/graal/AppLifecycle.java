@@ -15,10 +15,10 @@ public class AppLifecycle {
     InfluxStore influxStore;
 
     void onStart(@Observes StartupEvent ev) {
-        influxStore.lifecycleEvent(System.currentTimeMillis(), AppLifecycleEvent.STARTUP);
+  //      influxStore.lifecycleEvent(System.currentTimeMillis(), AppLifecycleEvent.STARTUP);
     }
 
     void onStop(@Observes ShutdownEvent ev) {
-        influxStore.lifecycleEvent(System.currentTimeMillis(), AppLifecycleEvent.SHUTDOWN);
+   //     influxStore.lifecycleEvent(System.currentTimeMillis(), AppLifecycleEvent.SHUTDOWN);
     }
 }

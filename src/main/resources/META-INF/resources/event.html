@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event</title>
+</head>
+<body>
+
+<label for="name">Name</label><input id="name" name="name" type="text"/><br>
+<label for="start">start</label><input id="start" name="start" type="datetime-local"/><br>
+<label for="duration">duration</label><input id="duration" name="duration" type="number"/><br>
+
+<button id="post" onclick="postEvent()">store</button>
+
+<script>
+    function postEvent(event) {
+
+        let name = document.getElementById('name').value;
+        let start = document.getElementById('start').value;
+        let duration = document.getElementById('duration').value;
+
+        fetch('/api/event', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({name: name, start: start, duration: duration})
+        })
+            .then((data) => console.log(data))
+            .catch((err) => console.log(err))
+    }
+</script>
+
+
+</body>
+</html>

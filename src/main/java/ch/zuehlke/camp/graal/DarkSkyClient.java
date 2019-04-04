@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 public interface DarkSkyClient {
 
     @GET
-    @Path("_TOKEN_/{lon},{lat}")
+    @Path("9c47c775264af91b56d4657fbb92e3ca/{lon},{lat}")
     @Produces(MediaType.APPLICATION_JSON)
     HashMap getWeather(@PathParam("lon") String lon, @PathParam("lat") String lat );
 

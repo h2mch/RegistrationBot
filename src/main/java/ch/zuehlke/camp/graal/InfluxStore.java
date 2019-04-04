@@ -29,7 +29,6 @@ public class InfluxStore {
     @ConfigProperty(name = "INFLUX_PASSWORD")
     private String influxPassword;
 
-
     @ConfigProperty(name = "INFLUX_DB")
     private String dbName;
 
@@ -39,14 +38,6 @@ public class InfluxStore {
     @RestClient
     private DarkSkyClient client;
 
-    public InfluxStore() {
-    }
-
-    InfluxStore(String dbName, String influxUser, String influxPassword) {
-        this.dbName = dbName;
-        this.influxUser = influxUser;
-        this.influxPassword = influxPassword;
-    }
 
     public void lifecycleEvent(long currentTimeMillis, AppLifecycleEvent event) {
         try (InfluxDB influxDB = InfluxDBFactory.connect("http://localhost:8086", influxUser, influxPassword)) {

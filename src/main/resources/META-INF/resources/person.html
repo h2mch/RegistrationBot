@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Person</title>
+</head>
+<body>
+
+<label for="firstname">Vorname</label><input id="firstname" name="firstname" type="text"/><br>
+<label for="lastname">Latname</label><input id="lastname" name="lastname" type="text"/><br>
+
+<button id="post" onclick="postPerson()">store</button>
+
+<script>
+    function postPerson(event) {
+
+        let firstname = document.getElementById('firstname').value;
+        let lastname = document.getElementById('lastname').value;
+
+        fetch('/api/person', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({firstname: firstname, lastname: lastname})
+        })
+            .then((data) => console.log(data))
+            .catch((err) => console.log(err))
+    }
+</script>
+</body>
+</html>
