@@ -100,11 +100,4 @@ public class TelegramStore {
         }
         updates.forEach(update -> System.out.println("id: " + update.getUpdateId()));
     }
-
-
-    @Scheduled(every = "10s")
-    public void pollTelegram() {
-        clearStores();
-        initStore();
-    }
 }

@@ -4,6 +4,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import ch.zuehlke.camp.graal.entity.AppLifecycleEvent;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 
@@ -11,12 +12,13 @@ import io.quarkus.runtime.StartupEvent;
 public class AppLifecycle {
 
     @Inject
-    TelegramStore telegramStore;
+    InfluxStore influxStore;
 
     void onStart(@Observes StartupEvent ev) {
-    //    telegramStore.initStore();
+        influxStore.lifecycleEvent(System.currentTimeMillis(), AppLifecycleEvent.STARTUP);
     }
 
     void onStop(@Observes ShutdownEvent ev) {
+        influxStore.lifecycleEvent(System.currentTimeMillis(), AppLifecycleEvent.SHUTDOWN);
     }
 }
